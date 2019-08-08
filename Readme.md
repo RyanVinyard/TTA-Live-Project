@@ -9,7 +9,13 @@ develop the skills necessary to succeed as a career developer.
 
 Though the application is not publically live, you can see below snippets of the code that I worked on.
 
-### Issue: Duplicate Job Type Displays
+## User Stories
+* [Duplicate Job Type Displays](#Duplicate-Job-Type-Displays)
+* [Work Type Descriptors](#Work-Type-Descriptors)
+* [Personal Schedule View](#Personal Schedule View)
+
+### Issue: Job Types displaying incorrectly
+## Duplicate Job Type Displays
 The application did not have any sort of check to ensure that duplicate job entries were not posted. This was a fairly simple oversight, but important to fix. In order to fix it, I rewrote the POST request to check first to see if the entry was
 valid, then if so, compare it to other job titles and job numbers. If it matched any of them, instead of POSTing, it would throw an error message displaying why it could not post. If this check failed, it would POST as normal.
 
@@ -55,6 +61,7 @@ valid, then if so, compare it to other job titles and job numbers. If it matched
 
 
 ### Issue: The dropdown list containing "work types" for employees (Foreman, Experienced MBA, etc) were listting as their internal values, creating a messy, confusing user experience
+## Work Type Descriptors
 When a site admin or manager created or edited any entries involving any employees, their role in the company would be listed. This was controlled with an editable dropdown list, allowing you to give them roles such as Foreman, Experienced MBA,
 New Hire, etc. Unfortunately, this dropdown menu displayed the internal values for these roles instead of clean descriptions, so you ended up having a dropdown menu with entries such as ExpMBA, and even placeholders. 
 
@@ -324,6 +331,7 @@ And here, I did the same with the Master Schedule partial view:
 
 
 ### Issue: Employees needed a way to view their own schedule, instead of just everyone's schedule
+## Personal Schedule View
 In order to make this work, I created a new partial view called MySchedulePartial, which would get only the jobs the currently logged in employee was on:
 
 		@using Microsoft.AspNet.Identity
