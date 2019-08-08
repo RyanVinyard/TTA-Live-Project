@@ -321,3 +321,187 @@ And here, I did the same with the Master Schedule partial view:
 				<br />
 			}
 		</div>
+
+
+### Issue: Employees needed a way to view their own schedule, instead of just everyone's schedule
+In order to make this work, I created a new partial view called MySchedulePartial, which would get only the jobs the currently logged in employee was on:
+
+		@using Microsoft.AspNet.Identity
+		@using System.Web.UI.WebControls
+		@using ConstructionNew.Models
+		@using ConstructionNew.Enums
+		@using ConstructionNew.Extensions
+		@using System.Collections.Generic
+
+
+
+		@model IEnumerable<ConstructionNew.Models.Job>
+
+
+
+		@{
+			ViewBag.Title = "Schedules";
+		}
+
+		<h5 style="text-align:right">
+			@Html.ActionLink("Back to Dashboard", "Index", "Dashboard")
+		</h5>
+
+		<h2>@User.Identity.GetUserName()'s Schedule</h2>
+
+		<div class="container">
+			@foreach (Job job in Model)
+			{
+
+				foreach (var m in job.Schedules)
+
+				{
+
+					if (m.Person.UserName == User.Identity.GetUserName())
+					{
+
+						<div class="panel panel-info">
+							<div class="panel-heading">
+								<table style="width:100%">
+									<tr>
+										<td style="width:40px">
+											<span class="label label-success">@job.JobNumber</span>
+										</td>
+										<td>
+											<span style="font-weight:bold">@job.JobTitle</span>
+											<br />@job.StreetAddress @job.City, @job.State
+										</td>
+
+										<td style="text-align:right">
+											<span>
+												<i class="glyphicon glyphicon-info-sign"></i>
+												@*Action Link to Job Details*@
+												@Html.ActionLink("Details", "Details", "Jobs", new { id = job.JobId }, null)
+											</span>
+										</td>
+									</tr>
+								</table>
+							</div>
+
+							<div class="panel-body">
+								<table style="width:100%">
+									<tr>
+										<th>Name</th>
+
+										<th><i class="glyphicon glyphicon-calendar"> </i> Start Date</th>
+										<th><i class="glyphicon glyphicon-calendar"> </i> End Date</th>
+									</tr>
+
+
+									@foreach (Job jobs in Model)
+									{
+
+										foreach (var j in jobs.Schedules)
+
+										{
+
+											if (j.Job.JobNumber == job.JobNumber && j.Person.UserName == User.Identity.GetUserName())
+											{
+												<tr style="border-bottom: 1px solid #ddd">
+													<td style="width:20%">
+														@j.Person.FName @j.Person.LName
+													</td>
+
+													<td style="width:20%">
+														@j.StartDate.ToString("MM-dd-yyyy")
+													</td>
+													<td style="width:20%">
+														@if (j.EndDate.HasValue)
+														{
+															@Convert.ToDateTime(j.EndDate).ToString("MM-dd-yyyy")
+														}
+													</td>
+
+													@if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+													{
+														<td style="text-align:right">
+															<a href="@Url.Action("Edit", "Schedules", new { id = j.ScheduleId }, null)">
+																<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+															</a>
+														</td>
+													}
+
+													@if (User.IsInRole("Employee"))
+													{
+														<td style="text-align:right">
+															<a href="@Url.Action("Details", "Schedules", new { id = j.ScheduleId }, null)">
+																<span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+															</a>
+														</td>
+													}
+												</tr>
+											}
+										}
+									}
+								</table>
+							</div>
+						</div>
+
+					}
+
+				}
+			}
+		</div>
+
+
+I also wrote a short snippet in the schedules controller to reference this view:
+
+        [Authorize]
+        public ActionResult MySchedulePartial()
+        {
+            var jobs = db.Jobs.Where(j => j.Schedules.Count > 0).ToList();
+
+            return View(jobs);
+        }
+
+        // GET: Schedules/Details/5
+        [Authorize] //used to restrict view of unregistered users
+        public ActionResult Details(Guid? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Schedule schedule = db.Schedules.Find(id);
+            if (schedule == null)
+            {
+                return HttpNotFound();
+            }
+            return View(schedule);
+        }
+
+
+As well as a small bit in the layout view:
+
+        <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" id="schedule">Schedule</a>
+            <ul class="dropdown-menu" role="menu">
+                @*Admin only*@
+                @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                {
+                    @*May need this link later, but not for now
+                    <li>
+                    <a class="dropdown-item">@Html.ActionLink("Edit", "Edit", "Schedules")</a>
+                    </li>*@
+                    <li>
+                        <a class="dropdown-item">@Html.ActionLink("Add New Item", "Create", "Schedules")</a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item">@Html.ActionLink("Create Weekly Schedule", "MasterScheduleEdit", "Schedules")</a>
+                    </li>
+                }
+                <li>
+                    <a class="dropdown-item">@Html.ActionLink("View All", "Index", "Schedules")</a>
+                </li>
+
+                    <li>
+                        <a class="dropdown-item">@Html.ActionLink("My Schedule", "MySchedulePartial", "Schedules")</a>
+                    </li>
+
+            </ul>
+        </li>
