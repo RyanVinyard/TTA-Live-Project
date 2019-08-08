@@ -12,7 +12,7 @@ Though the application is not publically live, you can see below snippets of the
 ## User Stories
 * [Duplicate Job Type Displays](#Duplicate-Job-Type-Displays)
 * [Work Type Descriptors](#Work-Type-Descriptors)
-* [Personal Schedule View](#Personal Schedule View)
+* [Personal Schedule View](#Personal-Schedule-View)
 
 ### Issue: Job Types displaying incorrectly
 ## Duplicate Job Type Displays
