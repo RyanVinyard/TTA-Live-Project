@@ -505,3 +505,17 @@ As well as a small bit in the layout view:
 
             </ul>
         </li>
+
+
+
+## In this project, I also learned some other skills, including:
+* How to work in a large group, overseen by a project manager
+* Utilization of Azure DevOps and the AGILE system to keep workflow clear
+* How to ask for help from other developers, as well as my team leaders
+	* During the project there were multiple times when I was fairly stuck. First, I would use stack exchange and various other resources, such as official documentation and various forums, to look for others having similar problems. 
+	* Sometimes, this was not enough. At this point I would ask my fellow team members, pairing up so we could try to tackle the problem together.
+	* In one instance, we simply could not figure it out, and needed to get the help of the project manager. She was able to direct us to the root of the issue once we explained everything we had tried.
+* Using offical documentation as well as google to identify parts of entity framework
+	* Prior to this project, I did not know that you could use migrations to incrementally update your database with your schema.
+	* I also had VERY limited experience in partial views, and did not quite understand them. Often times, you need to do your own research to even understand the problem.
+* Dealing with working remotely as well as joining a stand up meeting remotely when I was too sick to be there in person
